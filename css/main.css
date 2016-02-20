@@ -1,0 +1,28 @@
+body {
+	margin: 10px;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 14px;
+}
+
+
+
+
+
+
+
+
+
+ #easybutton{
+	 position:absolute;
+	 top: 10%;
+	 left:20%
+	 
+ }
+
+      #map { position:absolute; top:0; bottom:0; right: 0; left: 0; width:100%; }
+      .natcom .tilelegend-map {
+	  	position: relative;
+	  width: 100%;}
+
+	
+

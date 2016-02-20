@@ -1,0 +1,173 @@
+<html>
+    
+<head>
+
+<link rel="stylesheet" href="leaflet.css" />
+
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" />
+        <![endif]-->
+		<link rel="stylesheet" href="leaflet.css" />
+		<link rel="stylesheet" href="Leaflet.EditInOSM" />
+		<link rel="stylesheet" href="Leaflet.TileLegend.css" />
+		<link rel="stylesheet" href="l.geosearch.css" />
+		<link rel="stylesheet" href="main.css" />
+		<link rel="stylesheet" href="osx.css" />
+		
+		<script src="jquery.js" type="text/javascript"></script>
+		<script src="leaflet0.5.1.js" type="text/javascript"></script>
+		<script src="objectstyles.js" type="text/javascript"></script>
+		<script src="wax.leaf.min2.js" type="text/javascript"></script>
+		<script src="mustache.js" type="text/javascript"></script>		
+		<script src="leaflet-providers-0.0.2.js" type="text/javascript"></script>
+		<script src="leaflet-hash.js" type="text/javascript"></script>
+		<script src="Leaflet.EditInOSM.js" type="text/javascript"></script>
+		<script src="Leaflet.TileLegend.js"></script>
+		<script src="l.control.geosearch.js"></script>
+		<script src="l.geosearch.provider.google.js"></script>
+		<script src="legend.js"></script>
+
+</head>    
+<body>
+ 
+	   <div id="sidebar">
+  <input type='image' src='GetStartedicon.png' name='osx' class='osx demo'/>
+</div>	
+		<!-- modal content -->
+		<div id="osx-modal-content">
+			<div id="osx-modal-title">Hello! Welcome to the VantagePort Web Mapping Tool.</div>
+			<div class="close"><a href="#" class="simplemodal-close">x</a></div>
+			<div id="osx-modal-data">
+				<h2>How to use this website</h2>
+				<UL>
+				<li>Use either your mouse wheel or the zoom button on the left of the map to zoom in or out.</li>
+				<li>Click on the button to the right of the map to add layers to the map. As you zoom in, you can click on the different features to see more information.</li>
+				<li>You can search for an address using the field in the center of the map.</li>
+				</UL>
+				<h2>Map layer information</h2>
+				<UL><li>Featured Properties:  Properties for Sale by VantagePort</li>
+				<li>Property/Parcel Outlines: Physical boundaries for tracts of land. When you click on a parcel, you will see assessing data for that property</li></UL>
+                	   	<div id=".wax.tooltip"></div>    
+			</div>
+		</div>
+	</div>
+		</div>	
+	</div>		<script src="osx.js"></script>
+		<script src="jquery.simplemodal.js"></script>
+   
+	   <div id="map"></div>        
+
+
+</div></p>
+</div>
+</div>
+		<script type="text/javascript">
+
+$(document).ready(function() {
+
+var interaction;
+ var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+                    cmUrl = 'http://{s}.tiles.mapbox.com/v3/simonmi2.oan6ni0j/{z}/{x}/{y}.png'
+
+				var minimal = L.tileLayer(cmUrl, {
+                    attribution: cmAttr   });	
+				var tilejsonlayer = new L.LayerGroup();
+				var zone1citieslayer = new L.LayerGroup();
+				var planarealayer = new L.LayerGroup();
+				var natcomlayer = new L.LayerGroup();
+				
+				
+				$.getJSON('zone1cities.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: zone1citiesfeatures,
+                        style: 	function(feature) {
+							switch (feature.properties.Label) {
+								case 'Dixon': return {color: "#00C5FF"};
+								case 'Fairfield': return {color: "#FF0000"};
+								case 'Vacaville': return {color: "#A900E6"};
+								case 'Suisun City': return {color: "#FFAA00"};
+								case 'Vallejo': return {color: "#FF73DF"};
+								case 'Rio Vista': return {color: "#38A800"};
+					}
+				}	
+			
+                    }).addTo(zone1citieslayer);
+                });
+			
+		
+				
+				$.getJSON('planarea.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        style: planareastyle
+                    }).addTo(map);
+                }); 
+				
+			
+				
+				
+				
+		var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+                    cmUrl = 'http://{s}.tiles.mapbox.com/v3/simonmi2.oan6ni0j/{z}/{x}/{y}.png'
+
+		var minimal = L.tileLayer(cmUrl, {
+                    attribution: cmAttr   });	 
+			
+	
+		
+    map = new L.Map('map')
+					.addLayer(minimal)
+		            .setView(new L.LatLng(38.257, -121.947), 10); 		
+
+
+    	wax.tilejson('https://s3-us-west-1.amazonaws.com/solcty/tileparcels2.json',
+
+	function(tilejson) {
+
+            (new wax.leaf.connector(tilejson)).addTo(tilejsonlayer);
+
+			wax.leaf.interaction(map, tilejson);  
+	
+				$.getJSON('natcom.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: natcomfeatures,
+                        style: 	function(feature) {
+							switch (feature.properties.NatCom2015) {
+								case 'Agriculture': return {color: "#70FF91", weight: 0, opacity: 1, fillOpacity: 0.7};
+								case 'Coastal Marsh': return {color: "#96E7EB", weight: 0, opacity: 1, fillOpacity: 0.7};
+								case 'Developed': return {color: "#828282", weight: 0, opacity: 1, fillOpacity: 0.7};
+								case 'Inner Coast Range': return {color: "#FFAA00", weight: 0, opacity: 1, fillOpacity: 0.7};
+								case 'Pre-approved Development': return {color: "#FF5500", weight: 0, opacity: 1, fillOpacity: 0.7};
+								case 'Riparian': return {color: "#000FE1", weight: 0, opacity: 1, fillOpacity: 0.7};
+								case 'Valley Floor Grassland/Vernal Pool': return {color: "#C7B296", weight: 0, opacity: 1, fillOpacity: 0.7};
+				}	
+			}
+                    }).addTo(natcomlayer);
+                });
+			
+			var baseLayers = {
+                    "Basemap": minimal,
+                    "Aerial": L.TileLayer.provider('MapQuestOpen.Aerial')
+                };
+
+                var overlays = {
+					"Property/Parcel Outlines": tilejsonlayer,
+					"Cities":zone1citieslayer,
+					"Natural Communities":natcomlayer
+		
+	
+                };								
+
+                L.control.layers(baseLayers, overlays).addTo(map);
+				        new L.Control.GeoSearch({
+            provider: new L.GeoSearch.Provider.Google()
+        }).addTo(map);
+});
+});
+
+
+
+</script>		
+    </body>
+
+
+</html>

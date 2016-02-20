@@ -1,0 +1,82 @@
+html, body {
+	text-align: left;
+	background-repeat:repeat-x;
+	background-color:#39F;
+	font-size: 14x;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #ffffffff;
+}
+
+
+.header {width: 100%; height: 12%; background-color: #545655; }
+	.header p { float:right; margin-top: 40px;  color:#39C; font-weight:bold; font-style:italic; font-size:12px; }
+	
+.wax-tooltip {
+	name: tooltip;
+	position: fixed;
+	right: 1%;
+	top: 22%;
+	text-align: left;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14;
+	padding:-1px;
+	background-color:#39F;	
+	color:#fff;
+	opacity:1;
+
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	width: 23%;
+	height: 180px;
+	z-index: 100;
+	}
+#sidebar
+{
+	position: fixed;
+	height: 79.7%;
+	right: -0.25%;
+	background-color: #39F;
+	background-image:url(yesterdayagain.jpeg);
+	background-repeat:no-repeat;
+	top: 12.28%;
+	width: 25%;
+	font-size: 14;
+	color: #FFF;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+#map
+{ 
+position: fixed;
+top:12%;
+width: 75%;
+height:80%;
+}
+
+
+#footer { 
+position: fixed;
+top: 90%;
+width: 100%;
+height: 7%;
+align: center;
+        font-family: Trebuchet MS; 
+        font-size: x-small;
+        padding:3px;
+        margin:0px;
+        background-color:#545655;
+        color:#fff;     
+        border-bottom: 1px solid #3b3c3c;
+        border-top: 1px solid #3b3c3c; 
+        text-align:right;
+        }
+
+#footer a { 
+        color:#fff;
+         }
+
+#footer a:hover {
+        text-decoration: none;
+        }

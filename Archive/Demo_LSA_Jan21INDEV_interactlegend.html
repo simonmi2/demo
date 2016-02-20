@@ -1,0 +1,250 @@
+<html>
+
+<head>
+<link rel="stylesheet" href="leaflet.css" />
+
+<!--[if lte IE 8]>
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" />
+        <![endif]-->
+
+<link rel="stylesheet" href="leaflet-control-credits.css" />
+<link rel="stylesheet" href="Leaflet.EditInOSM.css" />
+<link rel="stylesheet" href="Leaflet.TileLegend.css" />
+<link rel="stylesheet" href="l.geosearch.css" />
+<link rel="stylesheet" href="main.css" />
+<link rel="stylesheet" href="demo.css" />
+<link rel="stylesheet" href="osx.css" />
+<link rel="stylesheet" href="leaflet-compass.css">
+<script src="jquery.js" type="text/javascript"></script>
+<script src="leaflet0.5.1.js" type="text/javascript"></script>
+<script src="objectstyles.js" type="text/javascript"></script>
+<script src="wax.leaf.min2.js" type="text/javascript"></script>
+<script src="mustache.js" type="text/javascript"></script>
+<script src="leaflet-providers-0.0.2.js" type="text/javascript"></script>
+<script src="leaflet-hash.js" type="text/javascript"></script>
+<script src="Leaflet.EditInOSM.js" type="text/javascript"></script>
+<script src="Leaflet.TileLegend.js"></script>
+<script src="l.control.geosearch.js"></script>
+<script src="l.geosearch.provider.google.js"></script>
+<!-- <script src="demo.js"></script> -->
+<script src="osx.js"></script>
+<script type="text/javascript" src="leaflet-control-credits.js"></script>
+
+<script type="text/javascript" src="leaflet.rightclickzoom.js"</script>
+<script src="osx.js"></script>
+<script src="jquery.simplemodal.js"></script>
+
+</head>
+<body>
+
+<div id=".wax.tooltip"></div>
+<div id=".wax.tooltip2"></div>
+<div id="leaflet-control-tilelegend-container"></div>
+<div id="map"></div>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    var interaction;
+    var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+    cmUrl = 'http://{s}.tiles.mapbox.com/v3/simonmi2.oan6ni0j/{z}/{x}/{y}.png'
+
+    var legend = {
+        title: "Solano County HCP",
+        description: "Legend",
+        sections: [{
+            title: 'Natural Communities',
+            className: 'landuse',
+            keys: [
+                {
+                    coordinates: [38.2571, -121.9469, 10],
+                    text: "Agriculture",
+					thumbnail:"Agriculture.png"
+                },
+                {
+                    coordinates: [38.2571, -121.9469, 10],
+                    text: "Coastal Marsh",
+					thumbnail:"CoastalMarsh.png"
+                },
+                {
+                    coordinates: [38.2571, -121.9469, 10],
+                    text: "Developed",
+					thumbnail:"Developed.png"
+                },
+				{
+                    coordinates: [38.2571, -121.9469, 10],
+                    text: "Inner Coast Range",
+					thumbnail:"InnerCoastRange.png"
+                },
+								{
+                    coordinates: [38.2571, -121.9469, 10],
+                    text: "Pre-approved Development",
+					thumbnail:"PreapprovedDevelopment.png"
+                },
+
+				{
+                    coordinates: [38.2571, -121.9469, 10],
+                    text: "Riparian",
+					thumbnail:"Riparian.png"
+                },
+				{
+                    coordinates: [38.2571, -121.9469, 10],
+                    text: "Valley Floor Grassland/VernalPool",
+					thumbnail:"ValleyFloorVernalPool.png"
+               }
+            ]
+        },
+	   {
+            title: 'Conservation Areas',
+            className: 'poi',
+            keys: [
+                {
+                    coordinates: [19.67108, -72.12233, 19],
+                    text: "Hospital"
+                },
+                {
+                    coordinates: [19.67269, -72.12493, 19],
+                    text: "Pharmacy"
+                },
+                {
+                    coordinates: [19.65555, -72.07040, 17],
+                    text: "University"
+                },
+                {
+                    coordinates: [19.54809, -71.72016, 19],
+                    text: "School"
+                },
+                {
+                    coordinates: [19.55134, -71.72704, 19],
+                    text: "Kindergarden",
+                    thumbnail: "path/to/an/image.png"
+                }
+            ]
+        }
+    ]};
+
+    var minimal = L.tileLayer(cmUrl, {
+        attribution: cmAttr,
+        legend: legend,
+        openLegendOnLoad: true,
+    });
+	
+    var tilejsonlayer = new L.LayerGroup();
+    var tilejsonlayer3 = new L.LayerGroup();
+    var zone1citieslayer = new L.LayerGroup();
+    var planarealayer = new L.LayerGroup();
+    var planneddevlayer = new L.LayerGroup();
+
+
+$function(){ 
+		$(legend).onclick { $.getJSON('natcom.geoJson', function (data) {
+        geojsonLayer = L.geoJson(data, {
+            onEachFeature: natcomfeatures,
+            style: function(feature) {
+                switch (feature.properties.NatCom2015) {
+                case 'Agriculture': return {color: "#70FF91", weight: 0, opacity: 1, fillOpacity: 0.7};
+                case 'Coastal Marsh': return {color: "#96E7EB", weight: 0, opacity: 1, fillOpacity: 0.7};
+                case 'Developed': return {color: "#828282", weight: 0, opacity: 1, fillOpacity: 0.7};
+                case 'Inner Coast Range': return {color: "#FFAA00", weight: 0, opacity: 1, fillOpacity: 0.7};
+                case 'Pre-approved Development': return {color: "#FF5500", weight: 0, opacity: 1, fillOpacity: 0.7};
+                case 'Riparian': return {color: "#000FE1", weight: 0, opacity: 1, fillOpacity: 0.7};
+                case 'Valley Floor Grassland/Vernal Pool': return {color: "#C7B296", weight: 0, opacity: 1, fillOpacity: 0.7};
+                }
+            }
+        }
+		}
+		}
+		).addTo(map)
+    });
+	
+$.getJSON('zone1cities.geoJson', function (data) {
+        geojsonLayer = L.geoJson(data, {
+            onEachFeature: zone1citiesfeatures,
+            style: function(feature) {
+                switch (feature.properties.Label) {
+                case 'Dixon': return {color: "#00C5FF"};
+                case 'Fairfield': return {color: "#FF0000"};
+                case 'Vacaville': return {color: "#A900E6"};
+                case 'Suisun City': return {color: "#FFAA00"};
+                case 'Vallejo': return {color: "#FF73DF"};
+                case 'Rio Vista': return {color: "#38A800"};
+                }
+            }
+        }).addTo(zone1citieslayer);
+    });
+
+    $.getJSON('planarea.geoJson', function (data) {
+        geojsonLayer = L.geoJson(data, {
+            style: planareastyle
+        }).addTo(map);
+    });
+
+    $.getJSON('planneddev.geoJson', function (data) {
+        geojsonLayer = L.geoJson(data, {
+            onEachFeature: planneddevfeatures,
+            style: planneddevstyle
+        }).addTo(planneddevlayer);
+    });
+
+	
+
+    var map = L.map('map', {doubleRightClickZoom: true, editInOSMControlOptions: {position: 'topleft'}, attributionControl: false})
+        .addLayer(minimal)
+        .setView(new L.LatLng(38.257, -121.947), 10);
+
+    var legendControl = (new L.Control.TileLegend()).addTo(map);
+    var hash = new L.Hash(map);
+    	wax.tilejson('https://s3-us-west-1.amazonaws.com/solcty/tileparcels2.json',
+
+	function(tilejson) {
+
+            (new wax.leaf.connector(tilejson)).addTo(tilejsonlayer);
+
+			wax.leaf.interaction(map, tilejson);  
+	  
+	 	
+	 wax.tilejson('https://s3-us-west-1.amazonaws.com/solcty/sssparcels/highpriorityspecies/tilehps.json',
+
+	function(tilejson) {
+
+            (new wax.leaf.connector(tilejson)).addTo(tilejsonlayer3);
+
+			wax.leaf.interaction(map, tilejson);  
+
+
+    var baseLayers = {
+        "Basemap": minimal,
+        "Aerial": L.TileLayer.provider('MapQuestOpen.Aerial')
+    };
+
+    var overlays = {
+        "Property/Parcel Outlines": tilejsonlayer,
+		"Natural Communities":natcomlayer,
+        "Special Status Species Occurrences":tilejsonlayer3,
+        "Zone 1 Cities":zone1citieslayer,
+        "Planned Development": planneddevlayer
+    };
+
+    L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map);
+    (new L.Control.GeoSearch({
+        provider: new L.GeoSearch.Provider.Google()
+    })).addTo(map);
+
+
+    var credctrl = L.controlCredits({
+        image: "lsalogo.png",
+        link: "http://www.lsa-assoc.com/",
+        text: "Interactive mapping by LSA"
+    }).addTo(map);
+
+});
+
+});
+});
+    });
+
+</script>
+
+</body>
+
+</html>

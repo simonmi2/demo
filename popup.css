@@ -1,0 +1,7 @@
+<style type="text/css">
+#exemple { float:left; width:400px; padding:30px; background-color:#FFFFFF; }
+a {background-color:#FFFFFF; color:#000000; text-decoration:underline;}
+a:hover {background-color:#ffffff; text-decoration:none;} /* background-color pour IE6*/
+a.tooltip span {display:none; padding:2px 3px; margin-left:10px; width:150px;}
+a.tooltip:hover span{display:inline; position:absolute; border:1px solid #cccccc; background:#ffffff; color: #000;}
+</style>

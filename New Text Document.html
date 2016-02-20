@@ -1,0 +1,353 @@
+<link rel="stylesheet" href="leaflet.css" />
+<link rel="stylesheet" href="leaflet.draw.css" />
+<!--[if lte IE 8]>
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" />
+        <![endif]-->
+
+<link rel="stylesheet" href="leaflet-control-credits.css" />
+<link rel="stylesheet" href="Leaflet.EditInOSM.css" />
+<link rel="stylesheet" href="Leaflet.TileLegend.css" />
+<link rel="stylesheet" href="l.geosearch.css" />
+<link rel="stylesheet" href="main.css" />
+<link rel="stylesheet" href="demo.css" />
+<link rel="stylesheet" href="osx.css" />
+<link rel="stylesheet" href="leaflet-compass.css">
+<script src="jquery.js" type="text/javascript"></script>
+<script src="leaflet.js" type="text/javascript"></script>
+<script src="Leaflet.draw.js" type="text/javascript"></script>
+<script src="objectstyles.js" type="text/javascript"></script>
+<script src="wax.leaf.min2.js" type="text/javascript"></script>
+<script src="mustache.js" type="text/javascript"></script>
+<script src="leaflet-providers-0.0.2.js" type="text/javascript"></script>
+<script src="leaflet-hash.js" type="text/javascript"></script>
+<script src="Leaflet.EditInOSM.js" type="text/javascript"></script>
+<script src="Leaflet.TileLegend.js"></script>
+<script src="l.control.geosearch.js"></script>
+<script src="l.geosearch.provider.google.js"></script>
+<!-- <script src="demo.js"></script> -->
+<script src="osx.js"></script>
+<script type="text/javascript" src="leaflet-control-credits.js"></script>
+
+<script type="text/javascript" src="leaflet.rightclickzoom.js"</script>
+<script src="osx.js"></script>
+<script src="jquery.simplemodal.js"></script>
+<script src="libs/leaflet-src.js"></script>
+	<link rel="stylesheet" href="libs/leaflet.css" />
+
+	<script src="/drawsrc/Leaflet.draw.js"></script>
+	<link rel="stylesheet" href="drawsrc/dist/leaflet.draw.css" />
+
+	<script src="drawsrc/Toolbar.js"></script>
+	<script src="drawsrc/Tooltip.js"></script>
+
+	<script src="drawsrc/ext/GeometryUtil.js"></script>
+	<script src="drawsrc/ext/LatLngUtil.js"></script>
+	<script src="drawsrc/ext/LineUtil.Intersect.js"></script>
+	<script src="drawsrc/ext/Polygon.Intersect.js"></script>
+	<script src="drawsrc/ext/Polyline.Intersect.js"></script>
+
+
+	<script src="drawsrc/draw/DrawToolbar.js"></script>
+	<script src="drawsrc/draw/handler/Draw.Feature.js"></script>
+	<script src="drawsrc/draw/handler/Draw.SimpleShape.js"></script>
+	<script src="drawsrc/draw/handler/Draw.Polyline.js"></script>
+	<script src="drawsrc/draw/handler/Draw.Circle.js"></script>
+	<script src="drawsrc/draw/handler/Draw.Marker.js"></script>
+	<script src="drawsrc/draw/handler/Draw.Polygon.js"></script>
+	<script src="drawsrc/draw/handler/Draw.Rectangle.js"></script>
+
+
+	<script src="drawsrc/edit/EditToolbar.js"></script>
+	<script src="drawsrc/edit/handler/EditToolbar.Edit.js"></script>
+	<script src="drawsrc/edit/handler/EditToolbar.Delete.js"></script>
+
+	<script src="drawsrc/Control.Draw.js"></script>
+
+	<script src="drawsrc/edit/handler/Edit.Poly.js"></script>
+	<script src="drawsrc/edit/handler/Edit.SimpleShape.js"></script>
+	<script src="drawsrc/edit/handler/Edit.Circle.js"></script>
+	<script src="drawsrc/edit/handler/Edit.Rectangle.js"></script>
+	<script src="drawsrc/edit/handler/Edit.Marker.js"></script>
+
+
+<body>
+
+    <div id=".wax.tooltip"></div>
+    <div id=".wax.tooltip2"></div>
+    <div id="leaflet-control-tilelegend-container"></div>
+    <div id="map"></div>
+    <div id="controllayers"></div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var interaction;
+            var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+                cmUrl = 'http://{s}.tiles.mapbox.com/v3/simonmi2.oan6ni0j/{z}/{x}/{y}.png'
+            var tilejsonlayer = new L.LayerGroup();
+            var tilejsonlayer3 = new L.LayerGroup();
+            var zone1citieslayer = new L.LayerGroup();
+            var planarealayer = new L.LayerGroup();
+            var planneddevlayer = new L.LayerGroup();
+            var natcomlayer = new L.LayerGroup();
+            var openwaterlayer = new L.LayerGroup();
+			var existingreserveslayer = new L.LayerGroup();
+            var legend = {
+                title: "Solano County HCP",
+                description: "Legend",
+                sections: [{
+                    title: 'Natural Communities',
+                    className: 'landuse',
+                    layer: natcomlayer,
+                    keys: [{
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Agriculture",
+                            thumbnail: "Agriculture.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Coastal Marsh",
+                            thumbnail: "CoastalMarsh.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Developed",
+                            thumbnail: "Developed.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Inner Coast Range",
+                            thumbnail: "InnerCoastRange.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Pre-approved Development",
+                            thumbnail: "PreapprovedDevelopment.png"
+                        },
+                        {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Riparian",
+                            thumbnail: "Riparian.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Valley Floor Grassland/VernalPool",
+                            thumbnail: "ValleyFloorVernalPool.png"
+                        }
+                    ]
+                }, {
+                    title: 'Existing Reserves',
+                    className: 'landuse',
+                    layer: existingreserveslayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Conservation Lands",
+						thumbnail: "existingreserves.png",},
+						
+						{
+						coordinates: [38.2571, -121.9469, 10],                 
+						text: "Mitigation Banks",
+						thumbnail: "mitigationbanks.png"
+						
+						}
+   					]
+					},
+				
+			   
+    ]};
+            var minimal = L.tileLayer(cmUrl, {
+                attribution: cmAttr,
+                legend: legend,
+                openLegendOnLoad: true,
+            });
+            $.getJSON('zone1cities.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    style: function(feature) {
+                        switch (feature.properties.Label) {
+                            case 'Dixon':
+                                return {
+                                    color: "#00C5FF"
+                                };
+                            case 'Fairfield':
+                                return {
+                                    color: "#FF0000"
+                                };
+                            case 'Vacaville':
+                                return {
+                                    color: "#A900E6"
+                                };
+                            case 'Suisun City':
+                                return {
+                                    color: "#FFAA00"
+                                };
+                            case 'Vallejo':
+                                return {
+                                    color: "#FF73DF"
+                                };
+                            case 'Rio Vista':
+                                return {
+                                    color: "#38A800"
+                                };
+                        }
+                    }
+                }).addTo(zone1citieslayer);
+            });
+			
+			 $.getJSON('existingreserves.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    style: function(feature) {
+                        switch (feature.properties.PROTECTION) {
+                            case 'Conservation Lands': 
+                                return {
+                                    color: "#5C8944",
+									weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+							case 'Open Space Lands':
+								return {
+									color: "#5C8944",
+									weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+								};
+                            case 'Mitigation Bank':
+                                return {
+                                    color: "#4C0073",
+							        weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								
+							 case 'Individual Mitigation Project':
+                                return {
+                                    color: "#4C0073",
+							        weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+							case 'Potential Mitigation Bank':	
+							      return {
+								  color: "#4C0073",
+							        weight: 0,
+                                    opacity: .5,
+                                    fillOpacity: 0.7
+                                };
+                           }
+                    }
+                }).addTo(existingreserveslayer);
+            });
+            $.getJSON('planarea.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    style: planareastyle
+                }).addTo(map);
+            });
+            $.getJSON('planneddev.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    style: planneddevstyle
+                }).addTo(planneddevlayer);
+            });
+            $.getJSON('openwater.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                }).addTo(openwaterlayer);
+            });
+            $.getJSON('natcom.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    style: function(feature) {
+                        switch (feature.properties.NatCom2015) {
+                            case 'Agriculture':
+                                return {
+                                    color: "#70FF91",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Coastal Marsh':
+                                return {
+                                    color: "#96E7EB",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Developed':
+                                return {
+                                    color: "#828282",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Inner Coast Range':
+                                return {
+                                    color: "#FFAA00",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Pre-approved Development':
+                                return {
+                                    color: "#FF5500",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Riparian':
+                                return {
+                                    color: "#000FE1",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Valley Floor Grassland/Vernal Pool':
+                                return {
+                                    color: "#C7B296",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                        }
+                    }
+                }).addTo(natcomlayer);
+            });
+          var map = L.map('map', {drawcontrol: true, doubleRightClickZoom: true, editInOSMControlOptions: {position: 'topleft'}, attributionControl: false})
+        .addLayer(minimal)
+        .setView(new L.LatLng(38.257, -121.947), 10);
+            (new L.Control.GeoSearch({
+                provider: new L.GeoSearch.Provider.Google()
+            })).addTo(map);
+            var legendControl = (new L.Control.TileLegend()).addTo(map);
+           
+ var hash = new L.Hash(map);
+    
+    var baseLayers = {
+        "Basemap": minimal,
+        "Aerial": L.TileLayer.provider('MapQuestOpen.Aerial')
+    };
+    var overlays = {
+        "Property/Parcel Outlines": tilejsonlayer,
+		"Natural Communities":natcomlayer,
+        "Special Status Species Occurrences":tilejsonlayer3,
+        "Zone 1 Cities":zone1citieslayer,
+        "Planned Development": planneddevlayer,
+		"Existing Reserves": existingreserveslayer
+    };
+    L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map);
+	
+	
+// Initialise the FeatureGroup to store editable layers
+var drawnItems = new L.FeatureGroup();
+map.addLayer(drawnItems);
+// Initialise the draw control and pass it the FeatureGroup of editable layers
+var drawControl = new L.Control.Draw({
+    edit: {
+        featureGroup: drawnItems
+    }
+});
+map.addControl(drawControl);
+	
+	
+                            var credctrl = L.controlCredits({
+                                image: "lsalogo.png",
+                                link: "http://www.lsa-assoc.com/",
+                                text: "Interactive mapping by LSA"
+                            }).addTo(map);
+	
+                      
+                });
+     
+    </script>
+
+</body>
