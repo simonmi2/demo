@@ -1,3 +1,37 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8808dc1dc67b8a2e9adb2924338802f108821f87c381264ba2ed34f2b72b1845
-size 1151
+var LEGEND = {
+    title: "HOT style",
+    description: "Humanitarian focused OSM base layer.",
+    displayPopup: true,
+    sections: [{
+        title: 'Natural Communities',
+        className: 'natcom',
+        keys: [
+            {
+                coordinates: [-122.16553797841476, 38.077536953728611, 15],
+                text: "Agriculture"
+            },
+            {
+                coordinates: [-122.16553797841476, 38.077536953728611, 15],
+                text: "Valley Floor Grassland/Vernal Pool"
+            },
+            {
+                coordinates: [-122.16553797841476, 38.077536953728611 15],
+                text: "Riparian, Stream, and Freshwater Marsh"
+            },
+            {
+                coordinates: [-122.16553797841476, 38.077536953728611 19],
+                text: "Developed"
+            },
+            {
+                coordinates: [-122.16553797841476, 38.077536953728611 16],
+                text: "Coastal Marsh"
+            },
+            {
+                coordinates: [1-122.16553797841476, 38.077536953728611, 17],
+                text: "Pre-Approved Development"
+            },
+
+        ]
+    }
+  
+]};

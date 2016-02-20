@@ -10,32 +10,30 @@ body {
 	 
  }
 
-
+.wax-tooltip {
+	name: tooltip;
+	position: absolute;
+	right: 20%;
+	top: 8%;
+	text-align: left;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12;
+	padding:5px;
+	color:#000000;
+	background-color:#FFFFFF;
+	opacity:1;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	width: 15%;
+	height: 15px;
+	z-index: 100;
+	}
 
 
 
       #map { position:absolute; top:0; bottom:0; right: 0; left: 0; width:100%; }
       .natcom .tilelegend-map {
 	  	position: relative;
-	  width: 100%;}
+	  width: 85%;}
 
 	
-.wax-tooltip {
-	name: tooltip;
-	position: fixed;
-	right: 0.15%;
-	top: 8%;
-	text-align: left;
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:12;
-	padding:15px;
-	background-color:#8FC4DD;	
-	color:#000000;
-	opacity:1;
-
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	width: 15%;
-	height: 170px;
-	z-index: 100;
-	}

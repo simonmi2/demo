@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+
+<link rel="stylesheet" href="leaflet.css" />
+
+
+
+<!--[if lte IE 8]>
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" />
+        <![endif]-->
+
+<link rel="stylesheet" href="leaflet-control-credits.css" />
+
+
+<link rel="stylesheet" href="Leaflet.TileLegend.css" />
+<link rel="stylesheet" href="l.geosearch.css" />
+<link rel="stylesheet" href="main2.css" />
+<link rel="stylesheet" href="demo.css" />
+<link rel="stylesheet" href="osx.css" />
+<link rel="stylesheet" href="leaflet-compass.css">
+<script src="jquery.js" type="text/javascript"></script>
+ <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+<script src="objectstylesdemo.js" type="text/javascript"></script>
+<script src="leaflet-providers-0.0.2.js" type="text/javascript"></script>
+<script src="L.control.search.js" type="text/javascript"></script>
+<script src="Leaflet.TileLegend.js"></script>
+
+<script src="l.control.geosearch.js"></script>
+<script src="l.geosearch.provider.google.js"></script>
+
+<script type="text/javascript" src="leaflet-control-credits.js"></script>
+<script type="text/javascript" src="leaflet-control-credits-src.js"></script>
+
+<script src="jquery.simplemodal.js"></script>
+<script src="libs/leaflet-src.js"></script>
+	
+
+<body>
+
+
+	<div id="credctrl-container"></div>
+    <div id="leaflet-control-tilelegend-container"></div>
+    <div id="map"></div>
+    <div id="controllayers"></div>
+	<div id='cssmenu'></div>
+
+  
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var interaction;
+            var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+                cmUrl = 'http://{s}.tiles.mapbox.com/v3/simonmi2.oan6ni0j/{z}/{x}/{y}.png'
+
+           
+            var planarealayer = new L.LayerGroup();          
+			var zone1citieslayer = new L.LayerGroup();
+			var parcellayer = new L.LayerGroup();
+	
+            var legend = {
+                title: "Solano County HCP",
+                description: "Legend",
+                sections: [{
+                    title: 'Parcel Boundaries',
+                    className: 'landuse',
+                    layer: parcellayer,
+                    keys: [{
+                       
+					    coordinates: [38.2571, -121.9469, 10],
+                        text: "Parcels",
+						thumbnail: "parcel.png",},
+						
+   					]
+				},
+	{
+                    title: 'Zone 1 Cities',
+                    className: 'landuse',
+                    layer: zone1citieslayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Dixon",
+						thumbnail: "dixon.png",},
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Fairfield",
+						thumbnail: "fairfield.png",},
+						
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Vacaville",
+						thumbnail: "vacaville.png",},
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Suisun City",
+						thumbnail: "suisuncity.png",},
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Vallejo",
+						thumbnail: "vallejo.png",},
+						
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                 
+						text: "Rio Vista",
+						thumbnail: "riovista.png",}
+						]
+						},
+				
+			   
+    ]};
+	
+
+  
+	var minimal = L.tileLayer(cmUrl, {
+       attribution: cmAttr,
+       legend: legend,
+       openLegendOnLoad: true,
+    });
+          
+			
+
+            $.getJSON('planarea.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    "color": "#000000",
+					"weight": 1,
+					"opacity": 1,
+					"fillOpacity": 0
+                }).addTo(map);
+            });
+     		
+
+
+		   $.getJSON('parcels.geoJson', function(data) {
+                onEachFeature: parcellayerfeatures
+				geojsonLayer = L.geoJson(data, {
+                    "color": "#000000",
+					"weight": 1,
+					"opacity": 1,
+					"fillOpacity": 0
+                }).addTo(parcellayer);
+            });
+	
+ $.getJSON('zone1cities.geoJson', function (data) {
+			geojsonLayer = L.geoJson(data, {
+            onEachFeature: zone1citiesfeatures,
+            style: function(feature) {
+                switch (feature.properties.Label) {
+                case 'Dixon': return {color: "#00C5FF"};
+                case 'Fairfield': return {color: "#FF0000"};
+                case 'Vacaville': return {color: "#A900E6"};
+                case 'Suisun City': return {color: "#FFAA00"};
+                case 'Vallejo': return {color: "#FF73DF"};
+                case 'Rio Vista': return {color: "#38A800"};
+                }
+            }
+        }).addTo(zone1citieslayer);
+    });
+
+
+		  
+          var map = new L.map('map', {attributionControl: false})
+
+		 .addLayer(minimal)
+         .setView(new L.LatLng(38.285063, -121.957385), 14);
+ 	
+		
+		(new L.Control.GeoSearch({
+                 provider: new L.GeoSearch.Provider.Google()
+             })).addTo(map);
+
+			 
+
+                            var credctrl = L.controlCredits({
+                                image: "lsalogo.png",
+                                link: "http://www.lsa-assoc.com/",
+                                text: "Interactive mapping by LSA"
+                           }).addTo(map);
+	
+ var legendControl = (new L.Control.TileLegend()).addTo(map);
+
+
+  var baseLayers = {
+        "Basemap": minimal,
+        "Aerial": L.TileLayer.provider('MapQuestOpen.Aerial')
+    };
+  
+    var overlays = {
+		"Parcels":parcellayer
+           };
+
+    L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map);
+
+
+
+
+
+
+
+    	
+
+    //parcel.feature = parcel; 
+    }); 
+	
+
+
+	
+
+
+
+
+
+     
+    </script>
+
+</body>

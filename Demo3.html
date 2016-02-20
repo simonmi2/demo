@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+
+
+<link rel="stylesheet" href="leaflet.css" />
+
+
+
+<!--[if lte IE 8]>
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" />
+        <![endif]-->
+
+<link rel="stylesheet" href="leaflet-control-credits.css" />
+<link rel="stylesheet" href="Leaflet.TileLegend.css" />
+<link rel="stylesheet" href="l.geosearch.css" />
+<link rel="stylesheet" href="leaflet.fusesearch.css" />
+<link rel="stylesheet" href="main2.css" />
+<link rel="stylesheet" href="demo.css" />
+<link rel="stylesheet" href="osx.css" />
+<script src="jquery.js" type="text/javascript"></script>
+ <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+<script src="objectstylesdemo.js" type="text/javascript"></script>
+<script src="leaflet-providers-0.0.2.js" type="text/javascript"></script>
+<script src="L.control.search.js" type="text/javascript"></script>
+<script src="Leaflet.TileLegend.js"></script>
+
+<script src="l.control.geosearch.js"></script>
+<script src="l.geosearch.provider.google.js"></script>
+<script src="fuse.js"></script>
+<script src="leaflet.fusesearch.js"></script>
+<script type="text/javascript" src="leaflet-control-credits.js"></script>
+<script type="text/javascript" src="leaflet-control-credits-src.js"></script>
+
+<script src="jquery.simplemodal.js"></script>
+<script src="libs/leaflet-src.js"></script>
+	
+
+<body>
+
+
+	<div id="credctrl-container"></div>
+    <div id="leaflet-control-tilelegend-container"></div>
+    <div id="map"></div>
+    <div id="controllayers"></div>
+	<div id='cssmenu'></div>
+
+  
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var interaction;
+            var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+                cmUrl = 'http://{s}.tiles.mapbox.com/v3/simonmi2.oan6ni0j/{z}/{x}/{y}.png'
+
+           
+            var planarealayer = new L.LayerGroup();          
+			var parcellayer = new L.LayerGroup();
+			var cnddblayer = new L.LayerGroup();
+			var landuselayer = new L.LayerGroup();
+			var natcomlayer = new L.LayerGroup();
+			var openspacelayer = new L.LayerGroup();
+			var vpconlayer = new L.LayerGroup();
+			var wetlandslayer = new L.LayerGroup();
+			
+	
+            var legend = {
+                title: "Solano County HCP",
+                description: "Legend",
+                sections: [{
+                    title: 'Parcel Boundaries',
+                    className: 'landuse',
+                    layer: parcellayer,
+                    keys: [{
+                       
+					    coordinates: [38.2571, -121.9469, 10],
+                        text: "Parcels",
+						thumbnail: "parcel.png",},
+						
+   					]
+				},
+	{
+                    title: 'Special Status Species Occurrences',
+                    className: 'landuse',
+                    layer: cnddblayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "CNDDB Polygon",
+						thumbnail: "dixon.png",
+						text: "Special Status Species Occurrence",
+						thumbnail: "newmarker.png",}
+						
+						
+						]
+						},
+					{
+                    title: 'Natural Communities',
+                    className: 'landuse',
+                    layer: natcomlayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Agriculture",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Developed",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Riparian, Stream, and Freshwater Marsh",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Valley Floor Grassland/Vernal Pool",
+						thumbnail: "dixon.png",},
+									
+                       
+						
+						]
+						},						
+										{
+                    title: 'Wetlands',
+                    className: 'landuse',
+                    layer: wetlandslayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Creek",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "J_Drain-seasonal-NJ",
+						thumbnail: "dixon.png",},
+						
+							{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "J_Wet-seasonal-J",
+						thumbnail: "dixon.png",},
+						
+							{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Other Seasonal Wetland Jurisdictional",
+						thumbnail: "dixon.png",},
+						
+							{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Other Seasonal Wetland Jurisdictional - Potential CTS Breeding Habitat",
+						thumbnail: "dixon.png",},
+						
+							{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Other Seasonal Wetland Non-jurisdictional",
+						thumbnail: "dixon.png",},
+						
+							{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Playa Pool A",
+						thumbnail: "dixon.png",},
+						
+							{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Playa Pool B",
+						thumbnail: "dixon.png",},
+													{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Potentially Jurisdictional Wetlands/Vernal Pools",
+						thumbnail: "dixon.png",},
+													{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Riparian",
+						thumbnail: "dixon.png",},
+													{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Seasonal Wetland",
+						thumbnail: "dixon.png",},
+													{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Tributary C",
+						thumbnail: "dixon.png",},
+						
+																			{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Tributary D",
+						thumbnail: "dixon.png",},
+																				{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Tributary E",
+						thumbnail: "dixon.png",},
+						
+																										{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Tributary of Union Creek",
+						thumbnail: "dixon.png",},
+																										{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Tributary A",
+						thumbnail: "dixon.png",},
+																										{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Union Creek",
+						thumbnail: "dixon.png",},
+																										{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Union Creek Bypass Channel",
+						thumbnail: "dixon.png",},
+																										{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Vernal Pool Wetland Jurisdictional",
+						thumbnail: "dixon.png",},
+																																{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Vernal Pool Wetland Jurisdictional - Potential CTS Breeding Habitat",
+						thumbnail: "dixon.png",},
+										
+						]
+						},
+					{
+                    title: 'Land Use',
+                    className: 'landuse',
+                    layer: landuselayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Developed",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "General Plan Designated Open Space and/or Agriculture",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Individual Mitigation Project",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Mitigation Bank",
+						thumbnail: "dixon.png",},
+									{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Planned Development",
+						thumbnail: "dixon.png",},
+						
+															{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Travis Air Force Base",
+						thumbnail: "dixon.png",},
+															{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Travis Reserve",
+						thumbnail: "dixon.png",},
+						
+						]
+						},
+						
+					
+						
+										{
+                    title: 'Open Space and Conservation Areas',
+                    className: 'landuse',
+                    layer: openspacelayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Conservation/Mitigation Bank",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Individual Mitigation Project",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Potential Mitigation Lands",
+						thumbnail: "dixon.png",},
+                      
+						
+						]
+						},
+						
+				
+						{
+                    title: 'Vernal Pool Conservation Areas',
+                    className: 'landuse',
+                    layer: vpconlayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "High Value Vernal Pool Conservation Area",
+						thumbnail: "dixon.png",},
+						{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Medium Value Vernal Pool Conservation Area",
+						thumbnail: "dixon.png",},
+										
+						]
+						},
+	
+				
+			   
+    ]};
+  
+	var minimal = L.tileLayer(cmUrl, {
+       attribution: cmAttr,
+       legend: legend,
+       openLegendOnLoad: true,
+    });
+
+
+          
+				 $.getJSON('parcels.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: parcellayerfeatures,
+                        style: parcelstyle,
+
+                    }).addTo(parcellayer);
+                });
+				
+				 $.getJSON('cnddb.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: cnddbfeatures,
+                        style: cnddbstyle
+                    }).addTo(cnddblayer);
+                });
+				
+				 $.getJSON('landuse.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: landusefeatures,
+                        style: function(feature) {
+                        switch (feature.properties.Status2015) {
+                            case 'Developed':
+                                return {
+                                    color: "#828282",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'General Plan Designated Open Space and/or Ag':
+                                return {
+                                    color: "#F5DA81",
+                                    weight: 1,
+                                    opacity: 0.5,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Individual Mitigation Project':
+                                return {
+                                    color: "#B40486",
+                                    weight: 1,
+                                    opacity: 0.5,
+									fillOpacity: 0.5
+								};
+							case 'Mitigation Bank':
+                                return {
+                                    color: "#FE2E9A",
+                                    weight: 1,
+                                    opacity: 0.5,
+									fillOpacity: 0.5
+								};
+							case 'Planned Development':
+                                return {
+                                    color: "#C4C0C0",
+                                    weight: 1,
+                                    opacity: 0.5,
+									fillOpacity: 0.5
+								};
+							case 'Travis AFB':
+                                return {
+                                    color: "#FFFFFF",
+                                    weight: 1,
+                                    opacity: 1,
+									fillOpacity: 0.02
+								};
+							case 'Travis Reserve':
+                                return {
+                                    color: "#F3DADA",
+                                    weight: 1,
+                                    opacity: 1,
+									fillOpacity: 1
+								 };
+                        }
+                    }
+		
+                    }).addTo(landuselayer);
+                });
+				
+				$.getJSON('natcom.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: natcomfeatures,
+                        style: function(feature) {
+					switch (feature.properties.NatCom2015) {
+                            case 'Agriculture':
+                                return {
+                                    color: "#70FF91",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Coastal Marsh':
+                                return {
+                                    color: "#96E7EB",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Developed':
+                                return {
+                                    color: "#828282",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Inner Coast Range':
+                                return {
+                                    color: "#FFAA00",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Pre-approved Development':
+                                return {
+                                    color: "#FF5500",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Riparian':
+                                return {
+                                    color: "#000FE1",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Valley Floor Grassland/Vernal Pool':
+                                return {
+                                    color: "#C7B296",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+									 };
+								case 'Conservation/Mitigation Bank':
+                                return {
+                                    color: "#FE2E9A",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+									 };
+                        }
+                    }
+		
+                    }).addTo(natcomlayer);
+                });
+				
+				$.getJSON('openspace.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: openspacefeatures,
+                        style: function(feature) {
+					switch (feature.properties.PROTECTION) {
+                            case 'Conservation/Mitigation Bank':
+                                return {
+                                    color: "#61210B",
+                                    weight: 1,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Individual Mitigation Project':
+                                return {
+                                    color: "#8A4B08",
+                                    weight: 1,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Potential Mitigation Lands':
+                                return {
+                                    color: "#B18904",
+                                    weight: 1,
+                                    opacity: 1,
+                                    fillOpacity: 0.7 };
+                        }
+                    }
+                    }).addTo(openspacelayer);
+                });
+				
+				var smallIcon = new L.Icon({
+				iconUrl: 'newmarker.png'
+ });
+				
+				
+				$.getJSON('sss.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                         pointToLayer: function(feature, latlng) {
+        console.log(latlng, feature);
+        return L.marker(latlng, {
+              icon: smallIcon
+        });
+      },
+						onEachFeature: sssfeatures,
+						
+                    }).addTo(cnddblayer);
+                });
+				
+				$.getJSON('vpcon.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: vpconfeatures,
+                        style: function(feature) {
+                        switch (feature.properties.VPArea) {
+                            case 'High Value Vernal Pool Conservation Area':
+                                return {
+                                    color: "#FE2E2E",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Medium Value Vernal Pool Conservation Area':
+                                return {
+                                    color: "#FE9A2E",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+									};
+                        }
+                    }
+                    }).addTo(vpconlayer);
+                });
+				$.getJSON('wetlands.geoJson', function (data) {
+                    geojsonLayer = L.geoJson(data, {
+                        onEachFeature: wetlandsfeatures,
+                        style: function(feature) {
+                        switch (feature.properties.WebMap) {
+                            case 'Creek':
+                                return {
+                                    color: "#81BEF7",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'J_Drain-seasonal-NJ':
+                                return {
+                                    color: "#819FF7",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+							        case 'J_Wet-seasonal-J':
+                                return {
+                                    color: "#8181F7",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Other Seasonal Wetland Jurisdictional':
+                                return {
+                                    color: "#00BFFF",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Other Seasonal Wetland Jurisdictional - Potential CTS Breeding Habitat':
+                                return {
+                                    color: "#4000FF",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Other Seasonal Wetland Non-jurisdictional':
+                                return {
+                                    color: "#7982AE",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Playa Pool A':
+                                return {
+                                    color: "#89A5BF",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Playa Pool B':
+                                return {
+                                    color: "#6693BE",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Potentially Jurisdictional Wetlands/Vernal Pools':
+                                return {
+                                    color: "#8566BE",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Riparian':
+                                return {
+                                    color: "#7401DF",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Seasonal Wetland':
+                                return {
+                                    color: "#4E9A95",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Seasonal Wetlands':
+                                return {
+                                    color: "#4E9A95",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Tributary C':
+                                return {
+                                    color: "#629D6E",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Tributary D':
+                                return {
+                                    color: "#819D62",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Tributary E':
+                                return {
+                                    color: "#9D9862",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Tributary of Union Creek':
+                                return {
+                                    color: "#629D77",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								        case 'Union Creek':
+                                return {
+                                    color: "#629D77",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								      case 'Union Creek Bypass Channel':
+                                return {
+                                    color: "#F629D77",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								case 'Vernal Pool Wetland Jurisdictional':
+                                return {
+                                    color: "#023A9A",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								case 'Vernal Pool Wetland Jurisdictional - Potential CTS Breedig Habitat':
+                                return {
+                                    color: "#020A9A",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+					};
+                        }
+                    }
+                    }).addTo(wetlandslayer);
+
+
+            $.getJSON('planarea.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    "color": "#000000",
+					"weight": 1,
+					"opacity": 1,
+					"fillOpacity": 0
+                }).addTo(map);
+            });
+     		
+
+
+
+		  
+          var map = new L.map('map', {attributionControl: false})
+
+		 .addLayer(minimal)
+         .setView(new L.LatLng(38.285507, -121.949692), 15);
+ 	
+		
+		(new L.Control.GeoSearch({
+                 provider: new L.GeoSearch.Provider.Google()
+             })).addTo(map);
+
+			 
+
+                            var credctrl = L.controlCredits({
+                                image: "lsalogo.png",
+                                link: "http://www.lsa-assoc.com/",
+                                text: "Interactive mapping by LSA"
+                           }).addTo(map);
+	
+ var legendControl = (new L.Control.TileLegend()).addTo(map);
+
+
+  var baseLayers = {
+        "Basemap": minimal,
+        "Aerial": L.TileLayer.provider('MapQuestOpen.Aerial')
+    };
+  
+    var overlays = {
+		"Parcels": parcellayer
+           };
+
+    L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map);
+
+
+var searchCtrl = new L.control.fuseSearch({position: 'topleft', title: 'Search by APN', placeholder: 'Search by APN',showResultFct: true})
+searchCtrl.addTo(map);
+
+searchCtrl.indexFeatures(parcels.geojson, ['apndashes']);
+
+L.geoJson(data, {
+    onEachFeature: function (feature, layer) {
+        feature.layer = layer;
+    }
+
+});
+    	
+
+    //parcel.feature = parcel; 
+    }); 
+	
+
+    //parcel.feature = parcel; 
+    }); 
+
+
+
+
+     
+    </script>
+
+</body>

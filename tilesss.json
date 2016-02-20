@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:699a613a3db8c4cd92fb8272dcf8af4029d714cbd2b38291ab8e4ac4250c89f4
-size 605
+grid({"bounds": ["-122.4248,38.02,-121.5761,38.5546"],
+"center": [0,0,2],"id": "parcels","minzoom": 10,"maxzoom": 17, 
+"name": "sssparcels", "version": "1.0.0", "scheme": "tms",
+ "template": "{{#__location__}}{{/__location__}}{{#__teaser__}}<br><div id='tooltip_occurrences'><span id='tooltip_value_occurrences'>No of Occurrences:{{{Join_Count}}}</span></div>{{/__teaser__}}{{#__full__}}{{/__full__}}",
+
+
+ "grids": ["https://s3-us-west-1.amazonaws.com/solcty/sssparcels/sssparcels/{z}/{x}/{y}.grid.json"],"tiles": ["https://s3-us-west-1.amazonaws.com/solcty/sssparcels/sssparcels/{z}/{x}/{y}.png"]})

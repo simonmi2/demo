@@ -8,7 +8,7 @@
 .leaflet-fusesearch-control .button {
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    background-image: url(../images/search.png);
+    background-image: url(search_input.png);
     display: block;
     width: 36px;
     height: 36px;
@@ -21,7 +21,7 @@
 .leaflet-fusesearch-panel {
     position: absolute;
     height: 100%;
-    width: 350px;
+    width: 100px;
     
     z-index: -1;
     opacity: 0;
@@ -76,7 +76,7 @@
     right: 25px;
     top: 15px;
     width: 30px;
-    height: 30px;
+    height: 100%;
     color: #333;
     font-size: 25pt;
     line-height: 1em;

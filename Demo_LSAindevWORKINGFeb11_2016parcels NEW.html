@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+
+<link rel="stylesheet" href="leaflet.css" />
+
+<!--[if lte IE 8]>
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" />
+        <![endif]-->
+
+<link rel="stylesheet" href="leaflet-control-credits.css" />
+<link rel="stylesheet" href="Leaflet.TileLegend.css" />
+<link rel="stylesheet" href="l.geosearch.css" />
+<link rel="stylesheet" href="main.css" />
+<script src="jquery.js" type="text/javascript"></script>
+		<script src="leaflet0.5.1.js" type="text/javascript"></script>
+
+		<script src="wax.leaf.min2.js" type="text/javascript"></script>
+		<script src="mustache.js" type="text/javascript"></script>		
+		<script src="leaflet-providers-0.0.2.js" type="text/javascript"></script>
+
+<script src="objectstyles.js" type="text/javascript"></script>
+<script src="mustache.js" type="text/javascript"></script>
+<script src="L.control.search.js" type="text/javascript"></script>
+<script src="fuse.min.js"></script>
+<script src="leaflet-hash.js" type="text/javascript"></script>
+<script src="Leaflet.TileLegend.js"></script>
+<script src="l.control.geosearch.js"></script>
+<script src="l.geosearch.provider.google.js"></script>
+
+<script type="text/javascript" src="leaflet-control-credits.js"></script>
+<script type="text/javascript" src="leaflet-control-credits-src.js"></script>
+
+<script src="jquery.simplemodal.js"></script>
+<script src="ext-3.3.1/adapter/ext/ext-base.js" type="text/javascript"></script>
+<script src="ext-all.js"  type="text/javascript"></script>
+
+<link rel="stylesheet" type="text/css" href="ext-3.3.1/resources/css/ext-all.css"></link>
+
+<link rel="stylesheet" type="text/css" href="geoext-all-debug.css"></link>
+
+<body>
+
+	<div id="form"></div>
+	<div id="credctrl-container"></div>
+    <div id=".wax.tooltip"></div>
+    <div id="leaflet-control-tilelegend-container"></div>
+    <div id="map"></div>
+    <div id="controllayers"></div>
+	<div id='cssmenu'></div>
+
+  
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var interaction;
+            var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+                cmUrl = 'http://{s}.tiles.mapbox.com/v3/simonmi2.oan6ni0j/{z}/{x}/{y}.png'
+
+           
+            var planarealayer = new L.LayerGroup();
+            var vernalpoollayer = new L.LayerGroup();
+            var natcomlayer = new L.LayerGroup();
+          
+			var existingreserveslayer = new L.LayerGroup();
+var parcellayer = new L.LayerGroup();
+			var zone1citieslayer = new L.LayerGroup();
+
+            var legend = {
+                title: "Solano County HCP",
+                description: "Legend",
+                sections: [{
+                    title: 'Parcel Boundaries',
+                    className: 'poi',
+                    layer: parcellayer,
+                    keys: [{
+                       
+					    coordinates: [38.285063, -121.957385, 15],
+                        text: "Parcels",
+						thumbnail: "parcel.png",},
+						
+   					]
+				},
+							
+				
+				
+				{
+                    title: 'All Natural Communities',
+                    className: 'landuse',
+                    layer: natcomlayer,
+                    keys: [{
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Agriculture",
+                            thumbnail: "Agriculture.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Coastal Marsh",
+                            thumbnail: "CoastalMarsh.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Developed",
+                            thumbnail: "Developed.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Inner Coast Range",
+                            thumbnail: "InnerCoastRange.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Pre-approved Development",
+                            thumbnail: "PreapprovedDevelopment.png"
+                        },
+
+                        {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Riparian",
+                            thumbnail: "Riparian.png"
+                        }, {
+                            coordinates: [38.2571, -121.9469, 10],
+                            text: "Valley Floor Grassland/VernalPool",
+                            thumbnail: "ValleyFloorVernalPool.png"
+                        }
+                    ]
+                }, 
+
+				
+				{
+                    title: 'Existing Reserves',
+                    className: 'landuse',
+                    layer: existingreserveslayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Conservation Lands",
+						thumbnail: "existingreserves.png",},
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Mitigation Banks",
+						thumbnail: "mitigationbanks.png"
+						
+						}
+   					]
+					},
+					{
+                    title: 'Zone 1 Cities',
+                    className: 'landuse',
+                    layer: zone1citieslayer,
+                    keys: [{
+                       
+					    coordinates: [138.2571, -121.9469, 10],
+                        text: "Dixon",
+						thumbnail: "dixon.png",},
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Fairfield",
+						thumbnail: "fairfield.png",},
+						
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Vacaville",
+						thumbnail: "vacaville.png",},
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Suisun City",
+						thumbnail: "suisuncity.png",},
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                
+						text: "Vallejo",
+						thumbnail: "vallejo.png",},
+						
+						
+						{
+						coordinates: [38.285063, -121.957385, 15],                 
+						text: "Rio Vista",
+						thumbnail: "riovista.png",}
+						]
+						},
+						
+   					
+					
+				
+
+			   
+    ]};
+	
+
+  
+		var minimal = L.tileLayer(cmUrl, {
+       attribution: cmAttr,
+       legend: legend,
+       openLegendOnLoad: true,
+    });
+          
+			 $.getJSON('existingreserves.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    style: function(feature) {
+                        switch (feature.properties.PROTECTION) {
+                            case 'Conservation Lands': 
+                                return {
+                                    color: "#5C8944",
+									weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+							case 'Open Space Lands':
+								return {
+									color: "#5C8944",
+									weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+								};
+                            case 'Mitigation Bank':
+                                return {
+                                    color: "#4C0073",
+							        weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+								
+							 case 'Individual Mitigation Project':
+                                return {
+                                    color: "#4C0073",
+							        weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+							case 'Potential Mitigation Bank':	
+							      return {
+								  color: "#4C0073",
+							        weight: 0,
+                                    opacity: 0.5,
+                                    fillOpacity: 0.7
+                                };
+                           }
+                    }
+                }).addTo(existingreserveslayer);
+            });
+
+            $.getJSON('planarea.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+				style: planareastyle
+                }).addTo(map);
+            });
+			 $.getJSON('parcels.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+				style: planareastyle
+                }).addTo(parcellayer);
+            });
+
+		 $.getJSON('zone1cities.geoJson', function (data) {
+			geojsonLayer = L.geoJson(data, {
+            onEachFeature: zone1citiesfeatures,
+            style: function(feature) {
+                switch (feature.properties.Label) {
+                case 'Dixon': return {color: "#00C5FF"};
+                case 'Fairfield': return {color: "#FF0000"};
+                case 'Vacaville': return {color: "#A900E6"};
+                case 'Suisun City': return {color: "#FFAA00"};
+                case 'Vallejo': return {color: "#FF73DF"};
+                case 'Rio Vista': return {color: "#38A800"};
+                }
+            }
+        }).addTo(zone1citieslayer);
+    });
+
+			
+	
+			
+			
+            $.getJSON('natcom.geoJson', function(data) {
+                geojsonLayer = L.geoJson(data, {
+                    style: function(feature) {
+                        switch (feature.properties.NatCom2015) {
+                            case 'Agriculture':
+                                return {
+                                    color: "#70FF91",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Coastal Marsh':
+                                return {
+                                    color: "#96E7EB",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Developed':
+                                return {
+                                    color: "#828282",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Inner Coast Range':
+                                return {
+                                    color: "#FFAA00",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Pre-approved Development':
+                                return {
+                                    color: "#FF5500",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Riparian':
+                                return {
+                                    color: "#000FE1",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                            case 'Valley Floor Grassland/Vernal Pool':
+                                return {
+                                    color: "#C7B296",
+                                    weight: 0,
+                                    opacity: 1,
+                                    fillOpacity: 0.7
+                                };
+                        }
+                    }
+                }).addTo(natcomlayer);
+            });
+	
+
+
+
+          var map = new L.map('map', {doubleRightClickZoom: true, editInOSMControlOptions: {position: 'topleft'}, attributionControl: false})
+
+		 .addLayer(minimal)
+         .setView(new L.LatLng(38.285063, -121.957385), 10);
+
+ 		(new L.Control.GeoSearch({
+                 provider: new L.GeoSearch.Provider.Google()
+             })).addTo(map);
+			 
+
+                            var credctrl = L.controlCredits({
+                                image: "lsalogo.png",
+                                link: "http://www.lsa-assoc.com/",
+                                text: "Interactive mapping by LSA"
+                           }).addTo(map);
+	
+ var legendControl = (new L.Control.TileLegend()).addTo(map);
+ 
+	
+
+  var baseLayers = {
+        "Basemap": minimal,
+        "Aerial": L.TileLayer.provider('MapQuestOpen.Aerial')
+    };
+  
+    var overlays = {
+		"Natural Communities":natcomlayer,
+		"Parcels":parcellayer
+           };
+
+    L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map);
+
+
+
+
+
+    //parcel.feature = parcel; 
+    }); 
+
+	
+
+
+
+
+
+     
+    </script>
+
+</body>

@@ -401,12 +401,11 @@ var easybutton = new L.easyButton('<img src="button.png">', function(btn, map){
 
   tilejson: '1.0.0',
   scheme: 'tms',
-  template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{/__teaser__}}{{#__full__}}{{{APN}}}{{/__full__}}",
+  template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{/__teaser__}}{{#__full__}}<br><br><br><div id='tooltip_parcelid'><span id='tooltip_value_parcel_id'>APN:{{{APN}}}</span></div>{{/__full__}}",
   tiles: ['https://s3-us-west-1.amazonaws.com/solcty/parcels2016/{z}/{x}/{y}.png'],
   grids: ['https://s3-us-west-1.amazonaws.com/solcty/parcels2016/{z}/{x}/{y}.grid.json'],
   formatter: function(options, data) { return data.NAME }
 };
-
 
             (new wax.leaf.connector(tilejson)).addTo(tilejsonlayer);
 
@@ -419,8 +418,7 @@ var easybutton = new L.easyButton('<img src="button.png">', function(btn, map){
   
     var overlays = {
 		"Natural Communities":natcomlayer,
-		"Parcels":tilejsonlayer,
-        "Existing Reserves":existingreserveslayer
+		"Parcels":tilejsonlayer
            };
 
     L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map);

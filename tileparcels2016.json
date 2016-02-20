@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9137edd6ea9f9372b04bd54c228683f55f930b26116783660b9916500586563a
-size 559
+grid({"bounds": ["-122.4261,38.0221,-121.5527,38.5525",],
+"center": [0,0,2],"id": "parcels","minzoom": 10,"maxzoom": 17, 
+"name": "solctyparcels", "version": "1.0.0", "scheme": "tms",
+ "template": "{{#__location__}}{{/__location__}}{{#__teaser__}}{{/__teaser__}}{{#__full__}}<div id='tooltip_parcel'><span id='tooltip_value_parcel'>APN:{{{APN}}}</span></div>{{/__full__}}",
+
+ "grids": ["https://s3-us-west-1.amazonaws.com/solcty/parcels2016/{z}/{x}/{y}.grid.json"],"tiles": ["https://s3-us-west-1.amazonaws.com/solcty/parcels2016/{z}/{x}/{y}.png"]})
+
+
